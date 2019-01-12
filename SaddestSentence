@@ -1,0 +1,57 @@
+####> Libraries ####
+
+library(tidyverse)
+library(readr)
+library(reshape2)
+library(stringr)
+library(syuzhet)
+library(viridis)
+library(SentimentAnalysis)
+library(RSentiment)
+library(sentimentr)
+library(tidytext)
+library(textclean)
+library(tokenizers)
+library(readtext)
+library(quanteda)
+library(data.table)
+
+# functions
+cleanup <- function(x) {
+  library(textclean)
+  result <- tolower(x)
+  result <- replace_word_elongation(result)
+  result <- replace_contraction(result)
+  return(result)
+}
+
+# rm(list = ls())
+
+# load multiple files from a specific directory into data frames
+
+folder <- "~/Desktop/Ubiqum/Final project/Files/" 
+file_list <- tolower(list.files(path=folder, pattern="*.txt"))
+name_list <- gsub(".txt", "", file_list)
+
+# empty dataframe, not sure whether neccessary
+
+df_test <- data.frame(sentence= character(),
+                 book = character())
+
+# for loop, combines all txt files into one df, also runs the cleanup function
+
+for (i in 1:length(file_list)){
+  
+  df_test <- rbind(df_test,as.data.frame(cbind(sentence = cleanup(assign(name_list[i], 
+                                         tokenize_sentences(read_file(paste(folder, 
+                                         file_list[i], sep='')), simplify = T))), 
+                                         book= name_list[i])), stringsAsFactors = F)
+    }
+
+
+atomised_df <- atomised_df %>% mutate(sentence = row_number(), book = "Atomised")
+
+
+df_test_sentiments <- cbind(df_test, nrc = apply(as.vector(df_test[1]), 1, get_sentiment,method = "nrc"))
+df_test_sentiments <- cbind(df_test_sentiments, afinn = apply(as.vector(df_test_sentiments[1]), 1, get_sentiment,method = "afinn"))
+df_test_sentiments <- cbind(df_test_sentiments, bing = apply(as.vector(df_test_sentiments[1]), 1, get_sentiment,method = "bing"))

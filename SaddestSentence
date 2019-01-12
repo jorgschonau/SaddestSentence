@@ -45,8 +45,8 @@ for (i in 1:length(file_list)){
   df_test <- rbind(df_test,as.data.frame(cbind(sentence = cleanup(assign(name_list[i], 
                                          tokenize_sentences(read_file(paste(folder, 
                                          file_list[i], sep='')), simplify = T))), 
-                                         book= name_list[i])), stringsAsFactors = F)
-    }
+                                         book= name_list[i]), stringsAsFactors = F))
+}
 
 
 atomised_df <- atomised_df %>% mutate(sentence = row_number(), book = "Atomised")

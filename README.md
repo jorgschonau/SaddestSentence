@@ -30,9 +30,12 @@ Books being used:
 * At the Mountains of Madness
 * Collection of Edgar Allan Poe Stories
 * A Clockwork Orange
+* Tropic of Cancer
 
 Also, for good measure, the scripts of these films:
 
 * The Big Lebowski
 * Pulp Fiction
 * Full Metal Jacket
+* Alien
+* The Predator

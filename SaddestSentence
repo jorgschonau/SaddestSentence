@@ -1,7 +1,6 @@
-####> Libraries ####
+#### Libraries ####
 
 library(tidyverse)
-library(readr)
 library(reshape2)
 library(stringr)
 library(syuzhet)
@@ -15,6 +14,7 @@ library(tokenizers)
 library(readtext)
 library(quanteda)
 library(data.table)
+library(tictoc)
 
 # functions
 cleanup <- function(x) {
@@ -22,36 +22,120 @@ cleanup <- function(x) {
   result <- tolower(x)
   result <- replace_word_elongation(result)
   result <- replace_contraction(result)
+  result <- gsub("[\r\n]", " ", result) # delete new lines markers
+  result <- gsub("  ", " ", result) # delete double white spaces
+  result <- gsub(" k. ", " k ", result) # to fix "K." - protagonist in the Trial
+  result <- gsub("_", "", result) # delete underscores
+  #result <- gsub(". . .", "...", result)
   return(result)
 }
 
-# rm(list = ls())
+rm(list = ls())
 
-# load multiple files from a specific directory into data frames
-
+# loads multiple files from a specific directory into data frames
 folder <- "~/Desktop/Ubiqum/Final project/Files/" 
+# (optional: only include csv files) 
 file_list <- tolower(list.files(path=folder, pattern="*.txt"))
 name_list <- gsub(".txt", "", file_list)
 
-# empty dataframe, not sure whether neccessary
-
-df_test <- data.frame(sentence= character(),
+# empty dataframe, apparently necessary
+df_test <- data.frame(sentence = character(),
                  book = character())
 
-# for loop, combines all txt files into one df, also runs the cleanup function
-
+tic() # tictocs just out of curiosity, some steps do take some time
 for (i in 1:length(file_list)){
+df_test <- as.data.frame(rbind(df_test,as.data.frame(cbind(sentence =  
+                                            unlist(get_sentences(cleanup(read_file(paste(folder, 
+                                            file_list[i], sep=''))))), 
+                                            book = name_list[i]), stringsAsFactors = F)))
+  }
+toc()
+
+df_test <- get_sentences(df_test) # for some reasons needs 2nd time
+
+df_test <- df_test %>% select(-element_id,-sentence_id)
+
+df_test <- df_test %>% group_by(book) %>% mutate(sentence_no = row_number()) %>% ungroup() # sentence no by book
+
+df_test_books <- df_test  %>% group_by(book) %>% summarise(sentence_no = max(sentence_no)) # overview volume by book
+
+View(df_test_books)
+
+tic()
+df_sentiments <- as.data.frame(apply(df_test[1], 2, get_sentiment, method = "afinn"))
+colnames(df_sentiments) <- c("afinn")
+toc()
+
+tic()
+df_sentiments$bing <- apply(df_test[1], 2, get_sentiment, method = "bing")
+toc()
+
+df_sentiments$bing <- as.integer(df_sentiments$bing)
+
+tic()
+df_sentiments$nrc <- as.integer(apply(df_test[1, drop = F], 2, get_sentiment, method = "nrc"))
+toc()
+
+df_sentiments$nrc<- as.integer(df_sentiments$nrc$sentence)
+
+colnames(df_sentiments) <- c("afinn","bing","nrc")
+
+#View(df_sentiments)
+
+tic()
+sentiments_sentR <- as.data.frame(apply(df_test[1], 2, sentiment))
+toc()
+
+#View(sentiments_sentR)
+
+tic()
+sentiments_nrc <- as.data.frame(apply(df_test[ 1, drop = F], 2, get_nrc_sentiment))
+toc()
+
+sentiments_nrc[1:ncol(sentiments_nrc)] <- as.integer(sentiments_nrc[1:ncol(sentiments_nrc)])
+
+#View(sentiments_nrc)
+
+text_sentiments <- cbind(df_test, df_sentiments, sentiments_nrc, sentiments_sentR)
+
+#fixing colnames
+colnames(text_sentiments) <- gsub("sentence[.]","",colnames(text_sentiments))
+
+# filtering out books
+text_sentiments %>% dplyr::filter(book != "capital")
+
+
+bookstats <- text_sentiments %>% group_by(book) %>% 
+             summarise(Sentences=max(sentence_no), words = sum(sentence.word_count,na.rm = T), avg.words.sentence = round(mean(sentence.word_count,na.rm = T),2)) %>% arrange(book)
+
+otherstats <- text_sentiments %>% group_by(book) %>% 
+              select(-sentence,-sentence_no,-sentence.element_id,-sentence.sentence_id) %>% dplyr::summarise_all(sum,na.rm = T) %>%
+              mutate(anger.perc = sentence.anger/sentence.word_count*100, 
+                     sadness.perc = sentence.sadness/sentence.word_count*100,
+                     joy.perc = sentence.joy/sentence.word_count*100, 
+                     anticipation.perc = sentence.anticipation/sentence.word_count*100,
+                     disgust.perc = sentence.disgust/sentence.word_count*100,
+                     trust.perc = sentence.trust/sentence.word_count*100,
+                     surprise.perc = sentence.surprise/sentence.word_count*100,
+                     fear.perc = sentence.fear/sentence.word_count*100)  %>%
+             mutate_if(is.numeric, round, 2) %>% 
+             arrange(book)
   
-  df_test <- rbind(df_test,as.data.frame(cbind(sentence = cleanup(assign(name_list[i], 
-                                         tokenize_sentences(read_file(paste(folder, 
-                                         file_list[i], sep='')), simplify = T))), 
-                                         book= name_list[i]), stringsAsFactors = F))
-}
+allbookstats <- cbind(bookstats,otherstats %>% select(-book,-sentence.word_count))
 
+#View(allbookstats)
 
-atomised_df <- atomised_df %>% mutate(sentence = row_number(), book = "Atomised")
+Book_summary <- cbind(bookstats,otherstats)
+min_afinn <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "capital") %>%
+    group_by(book) %>%
+    top_n(n = -5, wt = afinn) %>%
+    select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=5) %>%
+    arrange(book,afinn)
 
+top_afinn <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "capital") %>%
+  group_by(book) %>%
+  top_n(n = 5, wt = afinn) %>%
+  select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=5) %>%
+  arrange(book,afinn)
 
-df_test_sentiments <- cbind(df_test, nrc = apply(as.vector(df_test[1]), 1, get_sentiment,method = "nrc"))
-df_test_sentiments <- cbind(df_test_sentiments, afinn = apply(as.vector(df_test_sentiments[1]), 1, get_sentiment,method = "afinn"))
-df_test_sentiments <- cbind(df_test_sentiments, bing = apply(as.vector(df_test_sentiments[1]), 1, get_sentiment,method = "bing"))
+minmax_afinn <- rbind(min_afinn, top_afinn)

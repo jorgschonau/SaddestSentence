@@ -4,6 +4,12 @@ This is a continuation of my first attempt at sentiment analysis, which was also
 
 The purpose is to analyse a number of books on a sentence level and to identify the happiest, angriest, most positive, and of course also the saddest sentence.
 
+## Most Negative Sentence
+
+So far, the most sombre sentence is from the book Catch 22:
+
+
+
 Books being used:
 
 * Fear and Loathing in Las Vegas

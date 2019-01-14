@@ -15,10 +15,9 @@ titles_html <- titles_gb_page %>% html_nodes("ol")
 titles_html <- titles_html[c(1,3,5)]
 titles_raw  <- html_text(titles_html)
 titles_clean <- unlist(strsplit(titles_raw,"\n"))
-#titles_clean <- gsub("\\(.*?\\)$","", titles_clean)
-titles_clean <- gsub("\\sby.*?\\)","", titles_clean)
-titles_clean <- gsub(" \\(.*?\\)","", titles_clean)
-titles_clean <- str_squish(titles_clean)
+titles_clean <- gsub("\\sby.*?\\)","", titles_clean) # remove mentions of author - "by Robert Louis Stevenson"
+titles_clean <- gsub(" \\(.*?\\)","", titles_clean) # remove number of downloads in brackets
+titles_clean <- str_squish(titles_clean) # removes all kinds of white spaces
 titles_clean <- unique(titles_clean)
 
 # 2. Goodreads
@@ -28,7 +27,7 @@ titles_gr_html <- titles_gr_page %>% html_nodes(".bookTitle")
 titles_gr_raw  <- html_text(titles_gr_html)
 # remove additional info in brackets
 titles_gr_clean <- gsub("\\(.*?\\)$","", titles_gr_raw)
-# remove all puntuation
+# remove all puntuation - not necessary
 #titles_clean <- gsub('[[:punct:] ]+',' ',titles_clean)
 # remove white spaces
 titles_gr_clean <- str_squish(titles_gr_clean)

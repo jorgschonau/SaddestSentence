@@ -25,8 +25,9 @@ cleanup <- function(x) {
   result <- replace_contraction(result)
   result <- gsub("[\r\n]", " ", result) # delete new lines markers
   #result <- gsub("  ", " ", result) # delete double white spaces
-  result <- gsub(" k. ", " k ", result) # to fix "K." - protagonist in the Trial, messes up sentences
+  result <- gsub(" k. ", " k ", result) # to fix "K." - protagonist in "The Trial", messes up sentence splitting
   result <- gsub("_", " ", result) # delete underscores
+  result <- gsub("in'", "ing", result) # add missing "g" for g-dropping as in "huntin', shootin', fishin'"
   result <- str_squish(result)
   #result <- gsub(". . .", "...", result)
   return(result)
@@ -98,7 +99,7 @@ sentiments_nrc[1:ncol(sentiments_nrc)] <- as.integer(sentiments_nrc[1:ncol(senti
 
 #View(sentiments_nrc)
 
-text_sentiments <- cbind(df_test, df_sentiments, sentiments_nrc, sentiments_sentR)
+text_sentiments <- cbind(df_test, df_sentiments)#, sentiments_nrc, sentiments_sentR)
 
 
 View(text_sentiments)
@@ -164,3 +165,4 @@ unique(minmax_afinn$book)
 
 # search for partial matches
 View(text_sentiments %>% dplyr::filter(grepl("highway",sentence)))
+

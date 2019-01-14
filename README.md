@@ -21,33 +21,33 @@ An hounorable mention goes to Pulp Fiction:
 
 ### Books being used:
 
-* Fear and Loathing in Las Vegas
-* Atomised
-* Charlie and the Chocolate Factory
 * 1984
-* Crime and Punishment
-* Post Office
-* Ham on Rye
-* All three books of Lord of the Ring: The Fellowship of the Ring, The Two Towers, Return of the King
+* A Clockwork Orange
 * All Quiet on the Western Front
+* All three books of Lord of the Ring: The Fellowship of the Ring, The Two Towers, Return of the King
+* At the Mountains of Madness
+* Atomised
 * Catch 22
+* Charlie and the Chocolate Factory
+* Collection of Edgar Allan Poe Stories
+* Crime and Punishment
+* Dr Jekyll & Mr Hyde
+* Fahrenheit 451
+* Fear and Loathing in Las Vegas
+* Ham on Rye
+* Post Office
+* Siddharta
+* Slaughterhouse 5
 * The Call of Cthulhu
 * The Dark Tower
-* Fahrenheit 451
-* Dr Jekyll & Mr Hyde
-* Siddharta
-* The Old Man and the Sea
-* Thus Spake Zarathustra
-* The Trial
 * The Little Prince
-* Treasure Island
-* Slaughterhouse 5
-* At the Mountains of Madness
-* Collection of Edgar Allan Poe Stories
-* A Clockwork Orange
-* Tropic of Cancer
+* The Old Man and the Sea
 * The Road
+* The Trial
 * The Wasp Factory
+* Thus Spake Zarathustra
+* Treasure Island
+* Tropic of Cancer
 
 ### Also, for good measure, the scripts of these films:
 

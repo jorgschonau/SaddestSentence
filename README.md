@@ -14,7 +14,7 @@ So far, the most sombre sentence is from the book Catch 22:
 
 * Fear and Loathing in Las Vegas
 * Atomised
-* Charlie and the Chocolate Factory,
+* Charlie and the Chocolate Factory
 * 1984
 * Crime and Punishment
 * Post Office

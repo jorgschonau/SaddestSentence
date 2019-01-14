@@ -4,7 +4,7 @@ This is a continuation of my first attempt at sentiment analysis, which was also
 
 The purpose is to analyse a number of books on a sentence level and to identify the happiest, angriest, most positive, and of course also the saddest sentence.
 
-## Most Negative Sentence
+### Most Negative Sentence
 
 So far, the most sombre sentence is from the book Catch 22:
 
@@ -25,7 +25,7 @@ to death slowly in the house after his wife’s mother, who had been baby-sittin
 from a heart attack when news of his wife’s accident was given to her over the telephone.
 ```
 
-Books being used:
+### Books being used:
 
 * Fear and Loathing in Las Vegas
 * Atomised
@@ -54,7 +54,7 @@ Books being used:
 * Tropic of Cancer
 * The Road
 
-Also, for good measure, the scripts of these films:
+### Also, for good measure, the scripts of these films:
 
 * The Big Lebowski
 * Pulp Fiction

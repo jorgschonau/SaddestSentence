@@ -1,0 +1,50 @@
+library(dplyr)
+library(gutenbergr)
+library(rvest)
+library(textclean)
+library(tidytext)
+library(tidyverse)
+library(syuzhet)
+library(splashr)
+
+# gathering popular pb book
+# 1. List on Gutenberg
+
+titles_gb_page <- read_html("https://www.gutenberg.org/browse/scores/top")
+titles_html <- titles_gb_page %>% html_nodes("ol")
+titles_html <- titles_html[c(1,3,5)]
+
+titles_raw  <- html_text(titles_html)
+titles_clean <- unlist(strsplit(titles_raw,"\n"))
+#titles_clean <- gsub("\\(.*?\\)$","", titles_clean)
+titles_clean <- gsub("\\sby.*?\\)","", titles_clean)
+titles_clean <- gsub(" \\(.*?\\)","", titles_clean)
+titles_clean <- str_squish(titles_clean)
+titles_clean <- unique(titles_clean)
+
+# 2. Goodreads
+
+titles_gr_page <- read_html("https://www.goodreads.com/shelf/show/public-domain")
+titles_gr_html <- titles_gr_page %>% html_nodes(".bookTitle") 
+titles_gr_raw  <- html_text(titles_gr_html)
+# remove additional info in brackets
+titles_gr_clean <- gsub("\\(.*?\\)$","", titles_gr_raw)
+# remove all puntuation
+#titles_clean <- gsub('[[:punct:] ]+',' ',titles_clean)
+# remove white spaces
+titles_gr_clean <- str_squish(titles_gr_clean)
+
+titles_clean <- unique(c(titles_gr_clean, titles_clean))
+
+
+# 3. Check titles against gutenberg catalog
+catalog <- gutenberg_works() %>% filter(tolower(title) %in% tolower(titles_clean))
+# use books ids for downloading
+catalog$gutenberg_id  
+  
+books <- gutenberg_download(catalog$gutenberg_id,meta_fields = c("title","author"),verbose = T)
+
+
+# search gutenberg for titles
+
+#catalog %>% filter(gsub('[[:punct:] ]+',' ',tolower(title)) %in% titles_all)

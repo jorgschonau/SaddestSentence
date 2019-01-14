@@ -7,13 +7,12 @@ library(tidyverse)
 library(syuzhet)
 library(splashr)
 
-# gathering popular pb book
+# gathering titles of popular public domain books
 # 1. List on Gutenberg
 
 titles_gb_page <- read_html("https://www.gutenberg.org/browse/scores/top")
 titles_html <- titles_gb_page %>% html_nodes("ol")
 titles_html <- titles_html[c(1,3,5)]
-
 titles_raw  <- html_text(titles_html)
 titles_clean <- unlist(strsplit(titles_raw,"\n"))
 #titles_clean <- gsub("\\(.*?\\)$","", titles_clean)
@@ -33,17 +32,13 @@ titles_gr_clean <- gsub("\\(.*?\\)$","", titles_gr_raw)
 #titles_clean <- gsub('[[:punct:] ]+',' ',titles_clean)
 # remove white spaces
 titles_gr_clean <- str_squish(titles_gr_clean)
-
 titles_clean <- unique(c(titles_gr_clean, titles_clean))
-
 
 # 3. Check titles against gutenberg catalog
 catalog <- gutenberg_works() %>% filter(tolower(title) %in% tolower(titles_clean))
 # use books ids for downloading
-catalog$gutenberg_id  
-  
+# catalog$gutenberg_id  
 books <- gutenberg_download(catalog$gutenberg_id,meta_fields = c("title","author"),verbose = T)
-
 
 # search gutenberg for titles
 

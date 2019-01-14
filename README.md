@@ -38,6 +38,7 @@ So far, the most sombre sentence is from the book Catch 22:
 * A Clockwork Orange
 * Tropic of Cancer
 * The Road
+* The Wasp Factory
 
 ### Also, for good measure, the scripts of these films:
 

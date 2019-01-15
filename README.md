@@ -51,10 +51,11 @@ An hounorable mention goes to Pulp Fiction:
 
 ### Also, for good measure, the scripts of these films:
 
-* The Big Lebowski
-* Pulp Fiction
-* Full Metal Jacket
 * Alien
-* The Predator
-* The Godfather 2
+* Full Metal Jacket
 * Inglorious Basterds
+* Pulp Fiction
+* The Big Lebowski
+* The Godfather 2
+* The Predator
+

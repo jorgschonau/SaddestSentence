@@ -19,7 +19,7 @@ An hounorable mention goes to Pulp Fiction:
 >This shit is between me and you and the soon-to-be-livin'- the-rest-of-his-short-ass-life-in- agonizing-pain, mr. rapist here.
 
 
-### Books being used:
+### Books I used used:
 
 * 1984
 * A Clockwork Orange
@@ -56,3 +56,5 @@ An hounorable mention goes to Pulp Fiction:
 * Full Metal Jacket
 * Alien
 * The Predator
+* The Godfather 2
+* Inglorious Basterds

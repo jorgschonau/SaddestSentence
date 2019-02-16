@@ -1,0 +1,213 @@
+#### Libraries ####
+
+library(tidyverse)
+library(reshape2)
+library(stringr)
+library(syuzhet)
+library(viridis)
+library(SentimentAnalysis)
+library(RSentiment)
+library(sentimentr)
+library(tidytext)
+library(textclean)
+library(tokenizers)
+library(readtext)
+library(quanteda)
+library(data.table)
+library(tictoc)
+
+
+rm(list = ls())
+
+# functions
+cleanup <- function(x) {
+  
+  library(textclean)
+  result <- tolower(x)
+  result <- replace_word_elongation(result)
+  result <- replace_contraction(result)
+  result <- gsub("[\r\n]", " ", result) # delete new lines markers
+  #result <- gsub("  ", " ", result) # delete double white spaces
+  result <- gsub(" k. ", " k ", result) # to fix "K." - protagonist in "The Trial", messes up sentence splitting
+  result <- gsub("_", " ", result) # delete underscores
+  result <- gsub("in'", "ing", result) # add missing "g" for g-dropping as in "huntin', shootin', fishin'" ...
+  result <- str_squish(result)
+  result <- gsub(". . .", "...", result)
+  return(result)
+}
+
+# loads multiple files from a specific directory into data frames
+folder <- "~/Desktop/Ubiqum/Final project/Files/" 
+# (optional: only include csv files) 
+file_list <- tolower(list.files(path=folder, pattern="*.txt"))
+name_list <- gsub(".txt", "", file_list)
+
+# empty dataframe, not sure whether neccessary
+df_test <- data.frame(sentence = character(),
+                 book = character())
+
+tic()
+for (i in 1:length(file_list)){
+df_test <- as.data.frame(rbind(df_test,as.data.frame(cbind(sentence =  
+                                            unlist(get_sentences(cleanup(read_file(paste(folder, 
+                                            file_list[i], sep=''))))), 
+                                            book = name_list[i]), stringsAsFactors = F)))
+  }
+toc()
+
+df_test <- get_sentences(df_test) # for some reasons needs 2nd time
+
+df_test <- df_test %>% select(-element_id,-sentence_id)
+
+df_test <- df_test %>% group_by(book) %>% mutate(sentence_no = row_number()) %>% ungroup() # sentence no by book
+
+df_test_books <- df_test %>% group_by(book) %>% summarise(sentence_no = max(sentence_no)) # overview volume by book
+
+#View(df_test_books)
+
+tic()
+df_sentiments <- as.data.frame(apply(df_test[1], 2, get_sentiment, method = "afinn"))
+colnames(df_sentiments) <- c("afinn")
+toc()
+
+tic()
+df_sentiments$bing <- as.integer(apply(df_test[1], 2, get_sentiment, method = "bing"))
+toc()
+
+#df_sentiments$bing <- as.integer(df_sentiments$bing)
+
+tic()
+df_sentiments$nrc <- as.integer(apply(df_test[1, drop = F], 2, get_sentiment, method = "nrc"))
+toc()
+
+#df_sentiments$nrc<- as.integer(df_sentiments$nrc$sentence)
+
+colnames(df_sentiments) <- c("afinn","bing","nrc")
+
+#View(df_sentiments)
+
+tic()
+sentiments_sentR <- as.data.frame(apply(df_test[1], 2, sentiment))
+toc()
+
+#View(sentiments_sentR)
+
+tic()
+sentiments_nrc <- as.data.frame(apply(df_test[ 1, drop = F], 2, get_nrc_sentiment))
+toc()
+
+sentiments_nrc[1:ncol(sentiments_nrc)] <- as.integer(sentiments_nrc[1:ncol(sentiments_nrc)])
+
+#View(sentiments_nrc)
+
+text_sentiments <- cbind(df_test, df_sentiments, sentiments_nrc, sentiments_sentR)
+
+#View(text_sentiments)
+
+#fixing colnames
+colnames(text_sentiments) <- gsub("sentence[.]","",colnames(text_sentiments))
+text_sentiments <- text_sentiments %>% rename(sentimentR = sentiment)
+
+
+text_sentiments <- text_sentiments %>% select(sentence,word_count, afinn, bing, nrc, sentimentR, everything())
+
+#View(text_sentiments)
+
+# filtering out books
+#text_sentiments %>% dplyr::filter(book != "capital")
+
+
+bookstats <- text_sentiments %>% group_by(book) %>% 
+             summarise(Sentences=max(sentence_no), words = sum(word_count,na.rm = T), avg.words.sentence = round(mean(word_count,na.rm = T),2)) %>% arrange(book)
+
+otherstats <- text_sentiments %>% group_by(book) %>% 
+              select(-sentence,-sentence_no,-element_id,-sentence_id) %>% dplyr::summarise_all(sum,na.rm = T) %>%
+              mutate(anger.perc = anger/word_count*100, 
+                     sadness.perc = sadness/word_count*100,
+                     joy.perc = joy/word_count*100, 
+                     anticipation.perc = anticipation/word_count*100,
+                     disgust.perc = disgust/word_count*100,
+                     trust.perc = trust/word_count*100,
+                     surprise.perc = surprise/word_count*100,
+                     fear.perc = fear/word_count*100)  %>%
+             mutate_if(is.numeric, round, 2) %>% 
+             arrange(book)
+  
+allbookstats <- cbind(bookstats,otherstats %>% select(-book,-word_count))
+
+otherstats_sentence <- text_sentiments %>% group_by(sentence,book) %>% 
+  select(-sentence_no,-element_id,-sentence_id) %>% dplyr::summarise_all(sum,na.rm = T) %>%
+  mutate(anger.perc = anger/word_count*100, 
+         sadness.perc = sadness/word_count*100,
+         joy.perc = joy/word_count*100, 
+         anticipation.perc = anticipation/word_count*100,
+         disgust.perc = disgust/word_count*100,
+         trust.perc = trust/word_count*100,
+         surprise.perc = surprise/word_count*100,
+         fear.perc = fear/word_count*100)  %>%
+  mutate_if(is.numeric, round, 2) %>% 
+  arrange(book)
+
+View(otherstats_sentence)
+
+#View(otherstats_sentence%>% dplyr::filter(word_count >7))
+#View(allbookstats)
+
+# top n pos & neg per book
+
+min_afinn <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "zarathustra") %>%
+    group_by(book) %>%
+    top_n(n = -10, wt = afinn) %>%
+    select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=10) %>%
+    arrange(book,afinn)
+
+min_nrc <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "zarathustra") %>%
+  group_by(book) %>%
+  top_n(n = -10, wt = nrc) %>%
+  select(sentence,book,nrc) %>% dplyr::filter(rank(nrc, ties.method="first")<=10) %>%
+  arrange(book,nrc) 
+
+min_sentiment <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "zarathustra") %>%
+  group_by(book) %>%
+  top_n(n = -10, wt = sentimentR) %>%
+  select(sentence,book,sentimentR) %>% dplyr::filter(rank(sentimentR, ties.method="first")<=10) %>%
+  arrange(book,sentimentR) 
+
+View(min_nrc)
+
+
+top_afinn <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "Thus Spake Zarathustra") %>%
+  group_by(book) %>%
+  top_n(n = 10, wt = afinn) %>%
+  select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=10) %>%
+  arrange(book,afinn)
+
+minmax_afinn <- rbind(min_afinn, top_afinn)
+
+# with less stats
+
+
+View(minmax_afinn)
+
+min_afinn <- text_sentiments  %>% dplyr::filter(book != "capital") %>%
+  group_by(book) %>%
+  top_n(n = -10, wt = afinn) %>%
+  select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=10) %>%
+  arrange(book,afinn)
+
+top_afinn <- text_sentiments %>% dplyr::filter(book != "capital") %>%
+  group_by(book) %>%
+  top_n(n = 10, wt = afinn) %>%
+  select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=10) %>%
+  arrange(book,afinn)
+
+minmax_afinn <- rbind(min_afinn, top_afinn)
+
+
+View(minmax_afinn)
+
+unique(minmax_afinn$book)
+
+# search for partial matches
+View(text_sentiments %>% dplyr::filter(grepl("highway",sentence)))
+

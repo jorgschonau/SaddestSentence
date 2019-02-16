@@ -16,6 +16,9 @@ library(quanteda)
 library(data.table)
 library(tictoc)
 
+
+rm(list = ls())
+
 # functions
 cleanup <- function(x) {
   
@@ -27,13 +30,11 @@ cleanup <- function(x) {
   #result <- gsub("  ", " ", result) # delete double white spaces
   result <- gsub(" k. ", " k ", result) # to fix "K." - protagonist in "The Trial", messes up sentence splitting
   result <- gsub("_", " ", result) # delete underscores
-  result <- gsub("in'", "ing", result) # add missing "g" for g-dropping as in "huntin', shootin', fishin'"
+  result <- gsub("in'", "ing", result) # add missing "g" for g-dropping as in "huntin', shootin', fishin'" ...
   result <- str_squish(result)
-  #result <- gsub(". . .", "...", result)
+  result <- gsub(". . .", "...", result)
   return(result)
 }
-
-rm(list = ls())
 
 # loads multiple files from a specific directory into data frames
 folder <- "~/Desktop/Ubiqum/Final project/Files/" 
@@ -62,7 +63,7 @@ df_test <- df_test %>% group_by(book) %>% mutate(sentence_no = row_number()) %>%
 
 df_test_books <- df_test %>% group_by(book) %>% summarise(sentence_no = max(sentence_no)) # overview volume by book
 
-View(df_test_books)
+#View(df_test_books)
 
 tic()
 df_sentiments <- as.data.frame(apply(df_test[1], 2, get_sentiment, method = "afinn"))
@@ -99,15 +100,21 @@ sentiments_nrc[1:ncol(sentiments_nrc)] <- as.integer(sentiments_nrc[1:ncol(senti
 
 #View(sentiments_nrc)
 
-text_sentiments <- cbind(df_test, df_sentiments)#, sentiments_nrc, sentiments_sentR)
+text_sentiments <- cbind(df_test, df_sentiments, sentiments_nrc, sentiments_sentR)
 
+#View(text_sentiments)
 
-View(text_sentiments)
 #fixing colnames
 colnames(text_sentiments) <- gsub("sentence[.]","",colnames(text_sentiments))
+text_sentiments <- text_sentiments %>% rename(sentimentR = sentiment)
+
+
+text_sentiments <- text_sentiments %>% select(sentence,word_count, afinn, bing, nrc, sentimentR, everything())
+
+#View(text_sentiments)
 
 # filtering out books
-text_sentiments %>% dplyr::filter(book != "capital")
+#text_sentiments %>% dplyr::filter(book != "capital")
 
 
 bookstats <- text_sentiments %>% group_by(book) %>% 
@@ -141,23 +148,61 @@ otherstats_sentence <- text_sentiments %>% group_by(sentence,book) %>%
   mutate_if(is.numeric, round, 2) %>% 
   arrange(book)
 
+View(otherstats_sentence)
 
-View(otherstats_sentence%>% dplyr::filter(word_count >7))
-View(allbookstats)
+#View(otherstats_sentence%>% dplyr::filter(word_count >7))
+#View(allbookstats)
 
-min_afinn <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "capital") %>%
+# top n pos & neg per book
+
+min_afinn <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "zarathustra") %>%
     group_by(book) %>%
-    top_n(n = -5, wt = afinn) %>%
-    select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=5) %>%
+    top_n(n = -10, wt = afinn) %>%
+    select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=10) %>%
     arrange(book,afinn)
 
-top_afinn <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "capital") %>%
+min_nrc <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "zarathustra") %>%
   group_by(book) %>%
-  top_n(n = 5, wt = afinn) %>%
-  select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=5) %>%
+  top_n(n = -10, wt = nrc) %>%
+  select(sentence,book,nrc) %>% dplyr::filter(rank(nrc, ties.method="first")<=10) %>%
+  arrange(book,nrc) 
+
+min_sentiment <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "zarathustra") %>%
+  group_by(book) %>%
+  top_n(n = -10, wt = sentimentR) %>%
+  select(sentence,book,sentimentR) %>% dplyr::filter(rank(sentimentR, ties.method="first")<=10) %>%
+  arrange(book,sentimentR) 
+
+View(min_nrc)
+
+
+top_afinn <- text_sentiments %>% dplyr::filter(word_count < 250) %>% dplyr::filter(book != "Thus Spake Zarathustra") %>%
+  group_by(book) %>%
+  top_n(n = 10, wt = afinn) %>%
+  select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=10) %>%
   arrange(book,afinn)
 
 minmax_afinn <- rbind(min_afinn, top_afinn)
+
+# with less stats
+
+
+View(minmax_afinn)
+
+min_afinn <- text_sentiments  %>% dplyr::filter(book != "capital") %>%
+  group_by(book) %>%
+  top_n(n = -10, wt = afinn) %>%
+  select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=10) %>%
+  arrange(book,afinn)
+
+top_afinn <- text_sentiments %>% dplyr::filter(book != "capital") %>%
+  group_by(book) %>%
+  top_n(n = 10, wt = afinn) %>%
+  select(sentence,book,afinn) %>% dplyr::filter(rank(afinn, ties.method="first")<=10) %>%
+  arrange(book,afinn)
+
+minmax_afinn <- rbind(min_afinn, top_afinn)
+
 
 View(minmax_afinn)
 
@@ -165,4 +210,9 @@ unique(minmax_afinn$book)
 
 # search for partial matches
 View(text_sentiments %>% dplyr::filter(grepl("highway",sentence)))
+
+
+
+
+# ideas for Shiny: links to Goodreads/ IMDB for Film (categorize by book/ film, scrape image of cover and short synopsis)
 

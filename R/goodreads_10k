@@ -1,0 +1,19 @@
+library(tidyverse)
+
+book_tags <- read_csv("~/Downloads/goodbooks-10k/book_tags.csv")
+books <- read_csv("~/Downloads/goodbooks-10k/books.csv")
+ratings <- read_csv("~/Downloads/goodbooks-10k/ratings.csv")
+tags <- read_csv("~/Downloads/goodbooks-10k/tags.csv")
+toread <- read_csv("~/Downloads/goodbooks-10k/to_read.csv")
+
+books %>% dplyr::filter(title %in% c("The Trial", 1984, "The Road",
+                                     "The Wasp Factory","The Drinker"))
+
+View(books %>% dplyr::filter(title == "The Trial"))
+
+View(books %>% dplyr::filter(authors == "Franz Kafka"))
+
+book_tags %>% dplyr::filter(goodreads_book_id == 5470)
+
+merge(book_tags %>% dplyr::filter(goodreads_book_id == 17690), tags, 
+      by = "tag_id")

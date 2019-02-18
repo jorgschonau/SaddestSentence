@@ -4,6 +4,10 @@ This is a continuation of my first attempt at sentiment analysis, which was also
 
 The purpose is to analyse a number of books on a sentence level and to identify the happiest, angriest, most positive, and of course also the saddest sentence.
 
+### Output
+
+You will find a summary of the top & min 50 sentences per method [here](https://github.com/jorgschonau/SaddestSentence/blob/master/files/top50_sentimentr.csv)
+
 ### Most Negative Sentences
 
 So far, the most sombre sentence is from the book Catch 22:
@@ -45,7 +49,6 @@ An hounorable mention goes to Pulp Fiction:
 * The Road
 * The Trial
 * The Wasp Factory
-* Thus Spake Zarathustra
 * Treasure Island
 * Tropic of Cancer
 

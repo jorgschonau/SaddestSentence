@@ -8,14 +8,14 @@ The purpose is to analyse a number of books on a sentence level and to identify 
 
 You can download a summary of the top & min 50 sentences per method [here](https://github.com/jorgschonau/SaddestSentence/blob/master/files/top50_sentimentr.csv). I will put this soon on a Shiny environment, but for now you can just open it in Excel and sort by each of the coloumns. 
 
-Fun fact: the 3nd most negative senetence accordind to SentimentR is a line from beginning of the film Pulp Fiction:
+Fun fact: the 3nd most negative sentence according to SentimentR is a line from beginning of the film Pulp Fiction:
 
 >Honey Bunny: (imitates a duck) quack, quack, quack, quack, quack, quack, quack...
 
 
 ### The Saddest Sentences
 
-So far, the most sombre sentence is from the book Catch 22:
+So far, one of the most sombre sentence is lengthy train of thought from the book Catch 22:
 
 >His meditations were polluted with threats of dread diseases like Ewing’s tumor and leukemia; he saw his infant son die two or three times every week because he had never taught his wife how to stop arterial bleeding; watched, in tearful, paralyzed silence, his whole family electrocuted, one after the other, at a baseboard socket because he had never told her that a human body would conduct electricity; all four went up in flames almost every night when the water heater exploded and set the two-story wooden house afire; in ghastly, heartless, revolting detail he saw his poor dear wife’s trim and fragile body crushed to a viscous pulp against the brick wall of a market building by a half-wined drunken automobile driver and watched his hysterical five-year-old daughter being led away from the grisly scene by a kindly middle-aged gentleman with snow-white hair who raped and murdered her repeatedly as soon as he had driven her off to a deserted sandpit, while his two younger children starved to death slowly in the house after his wife’s mother, who had been baby-sitting, dropped dead from a heart attack when news of his wife’s accident was given to her over the telephone.
 
@@ -25,7 +25,7 @@ Followed by this sobering verdict from Crime and Punisment:
 
 An hounorable mention goes to Pulp Fiction:
 
->This shit is between me and you and the soon-to-be-livin'- the-rest-of-his-short-ass-life-in- agonizing-pain, mr. rapist here.
+>This shit is between me and you and the soon-to-be-livin'- the-rest-of-his-short-ass-life-in- agonizing-pain, Mr. rapist here.
 
 
 ### Books analysed:
@@ -40,7 +40,7 @@ An hounorable mention goes to Pulp Fiction:
 * Charlie and the Chocolate Factory
 * Collection of Edgar Allan Poe Stories
 * Crime and Punishment
-* Dr Jekyll & Mr Hyde
+* The Strange Case of Dr Jekyll & Mr Hyde
 * Fahrenheit 451
 * Fear and Loathing in Las Vegas
 * Ham on Rye

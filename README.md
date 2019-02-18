@@ -6,9 +6,14 @@ The purpose is to analyse a number of books on a sentence level and to identify 
 
 ### Output
 
-You will find a summary of the top & min 50 sentences per method [here](https://github.com/jorgschonau/SaddestSentence/blob/master/files/top50_sentimentr.csv)
+You can download a summary of the top & min 50 sentences per method [here](https://github.com/jorgschonau/SaddestSentence/blob/master/files/top50_sentimentr.csv). I will put this soon on a Shiny environment, but for now you can just open it in Excel and sort by each of the coloumns. 
 
-### Most Negative Sentences
+Fun fact: the 3nd most negative senetence accordind to SentimentR is a line from beginning of the film Pulp Fiction:
+
+>Honey Bunny: (imitates a duck) quack, quack, quack, quack, quack, quack, quack...
+
+
+### The Saddest Sentences
 
 So far, the most sombre sentence is from the book Catch 22:
 

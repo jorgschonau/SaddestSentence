@@ -1,6 +1,6 @@
 # SaddestSentence
 
-This is a continuation of my first attempt at sentiment analysis (you'll find it [here](https://github.com/jorgschonau/finalproject) ), which was also my final project for Ubiqum Code Academy.
+This is a continuation of my first attempt at sentiment analysis (you'll find it [here](https://github.com/jorgschonau/finalproject)), which was my final project for Ubiqum Code Academy.
 
 The purpose of this project is to analyse a number of books on a sentence level and to identify the happiest, angriest, most positive, and of course also the saddest sentence (latter often turn out to be the most interesting ones ...).
 
@@ -23,7 +23,7 @@ Followed by this sobering verdict from Crime and Punisment:
 
 >And she had destroyed herself, crushed by an insult that had appalled and amazed that childish soul, had smirched that angel purity with unmerited disgrace and torn from her a last scream of despair, unheeded and brutally disregarded, on a dark night in the cold and wet while the wind howled....
 
-Maybe not one of the saddest sentences, but an hounorable mention has to go to Pulp Fiction:
+Maybe not one of the saddest sentences, but an hounorable mention has to go to Pulp Fiction (again):
 
 >This shit is between me and you and the soon-to-be-livin'- the-rest-of-his-short-ass-life-in- agonizing-pain, Mr. rapist here.
 

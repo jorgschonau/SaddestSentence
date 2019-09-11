@@ -1,6 +1,6 @@
 # SaddestSentence
 
-This is a continuation of my first attempt at sentiment analysis (you'll find it here), which was also my final project for Ubiqum Code Academy.
+This is a continuation of my first attempt at sentiment analysis (you'll find it [here] (https://github.com/jorgschonau/finalproject) ), which was also my final project for Ubiqum Code Academy.
 
 The purpose of this project is to analyse a number of books on a sentence level and to identify the happiest, angriest, most positive, and of course also the saddest sentence (latter often turn out to be the most interesting ones ...).
 

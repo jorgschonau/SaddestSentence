@@ -25,7 +25,7 @@ Followed by this sobering verdict from Crime and Punisment:
 
 Maybe not one of the saddest sentences, but an hounorable mention has to go to Pulp Fiction (again):
 
->This shit is between me and you and the soon-to-be-livin'- the-rest-of-his-short-ass-life-in- agonizing-pain, Mr. rapist here.
+>This shit is between me and you and the soon-to-be-livin'-the-rest-of-his-short-ass-life-in-agonizing-pain, Mr. rapist here.
 
 
 ### Books analysed:

@@ -1,8 +1,8 @@
 # SaddestSentence
 
-This is a continuation of my first attempt at sentiment analysis, which was also my final project for Ubiqum Code Academy.
+This is a continuation of my first attempt at sentiment analysis (you'll find it here), which was also my final project for Ubiqum Code Academy.
 
-The purpose is to analyse a number of books on a sentence level and to identify the happiest, angriest, most positive, and of course also the saddest sentence.
+The purpose of this project is to analyse a number of books on a sentence level and to identify the happiest, angriest, most positive, and of course also the saddest sentence (latter often turn out to be the most interesting ones ...).
 
 ### Output
 
@@ -57,7 +57,7 @@ Maybe not one of the saddest sentences, but an hounorable mention has to go to P
 * Treasure Island
 * Tropic of Cancer
 
-### Also, for good measure, the scripts of these films:
+### In addition, for good measure, the scripts of these films:
 
 * Alien
 * Full Metal Jacket
